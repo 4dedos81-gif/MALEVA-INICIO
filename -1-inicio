@@ -1,0 +1,95 @@
+IVE — Ingeniería Variable Emergente / MALEVA-inicio fase 1 / sin material maleva nucleo/ generalizacion estructural
+
+Repositorio: IVE-ingenieria-variable-emergente-maleva
+Autor: [Tu nombre]
+Estado del modelo: Versión base (M1) — en desarrollo
+Propósito: Modelado matemático y arquitectura de sistemas distribuidos para materiales funcionales con capacidad de autocuración, harvesting y transición de fase.
+1. Resumen del proyecto
+
+Este repositorio contiene el modelo matemático base y la arquitectura de referencia para el sistema MALEVA (Malla Adaptativa de Larga Vida y Energía Variable). El sistema modela una malla hexagonal adaptativa donde cada nodo puede:
+
+    Absorber energía.
+
+    Redistribuir energía.
+
+    Degradarse y recuperarse parcialmente.
+
+    Colapsar bajo umbrales críticos.
+
+El objetivo es explorar sistemas distribuidos con daño local, resiliencia emergente, transición de fase y colapso global.
+2. Estructura del repositorio
+text
+
+IVE-ingenieria-variable-emergente-maleva/
+├── README.md                         # Este archivo
+├── modelos/
+│   ├── M1_modelo_matematico_base.md  # Definición formal del modelo M1
+│   └── M1_variables_estado.md        # Detalle de variables y ecuaciones
+├── arquitectura/
+│   ├── M1_M2_M3_especificacion.md    # Capas funcionales y materiales
+│   └── flujo_fabricacion.md          # Procesos de fabricación por capa
+└── simulaciones/
+    └── (pendiente)
+
+3. Modelo matemático base (M1)
+
+El modelo define una malla de N nodos hexagonales con seis variables de estado por nodo:
+Variable	Símbolo	Descripción
+Densidad de edge states	ρ_i	0 ≤ ρ ≤ 1; saturación en 1
+Daño irreversible	D_i	Acumulativo; umbral de colapso D_crit = 3.5
+Plasticidad local	P_i	0 ≤ P ≤ 1; modulada por energía recuperada y daño
+Temperatura local	T_i	Afecta la ablación; colapso si T > 1800 K
+Actividad topológica	A_i	Decae exponencialmente con energía incidente
+Estado de supervivencia	M_i	1 = activo; 0 = colapsado
+
+Evolución temporal (discreta):
+
+    Saturación: ρ_i(t+Δt) = min(1, ρ_i(t) + k_ρ * E_i)
+
+    Daño: D_i(t+Δt) = D_i(t) + k_D * E_i
+
+    Colapso: M_i = 0 si D_i > 3.5 o T_i > 1800 K
+
+Acoplamiento entre nodos (buffer amniótico):
+
+    Intercambio de energía entre vecinos hexagonales:
+    dE_i/dt = -λ * Σ_j (E_i - E_j)
+
+Transición de fase global:
+
+    Fracción de nodos muertos: p = Σ_i (1 - M_i) / N
+
+    Colapso global si p > 0.30
+
+Función de salud de la malla:
+
+    H = w₁*(1-p) + w₂*Ā + w₃*P̄ + w₄*(1 - D̄/D_crit)
+
+4. Arquitectura de capas (M1, M2, M3)
+
+El sistema físico se compone de tres capas funcionales:
+Capa	Grosor	Material	Función	Coste relativo
+M1 (exterior)	0.15–0.20 mm	PU/TPU + microfibra opcional	Protección y sensado superficial	Bajo
+M2 (intermedia)	0.90–1.20 mm	PA12/PEEK + fibra corta + relleno conductivo	Canalización de señales y edge states pasivos	Medio
+M3 (interior)	1.20–1.50 mm	PA12/PEEK + sensores + PU/TPU	Núcleo inteligente con retroalimentación activa	Alto
+
+Cada capa puede operar de forma independiente o combinada, según los requisitos de la aplicación.
+5. Estado actual del desarrollo
+
+    ✅ Modelo matemático base (M1): variables, ecuaciones y umbrales definidos.
+
+    ✅ Arquitectura de capas M1, M2, M3: materiales, procesos y costes estimados.
+
+    ⚠️ Simulaciones numéricas: pendientes de implementación.
+
+6. Próximos pasos
+
+    Implementación del modelo M1 en Python o MATLAB.
+
+    Simulación de escenarios de daño, recuperación y transición de fase.
+
+    Validación de la función de salud global H.
+
+7. Licencia y uso
+
+Este repositorio es de acceso público. El material aquí contenido está destinado a la exploración técnica y la investigación. No se ofrece ninguna garantía sobre su aplicabilidad en sistemas reales sin validación experimental.
