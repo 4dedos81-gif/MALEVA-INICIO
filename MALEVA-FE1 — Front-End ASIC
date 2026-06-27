@@ -1,0 +1,59 @@
+MALEVA-FE1 — Front-End ASIC para Membranas Distribuidas
+Abstract (IEEE style)
+MALEVA-FE1 es un ASIC de adquisición distribuida diseñado para membranas estructurales activas (MALEVA-Σ). El sistema soporta la lectura simultánea de hasta 256 canales analógicos de strain, respuesta piezoeléctrica y variaciones de impedancia.
+Implementa un modelo de correlación espacial embebido que transforma mediciones discretas en un campo continuo reconstruido, permitiendo detección local de daño, propagación de eventos mecánicos y estados topológicos de deformación.
+El diseño integra front-end analógico de baja potencia, conversión ADC multiplexada, compresión temporal y un motor de correlación espacial de baja complejidad implementado en hardware.
+Arquitectura General
+Flujo de señal:
+textMEMBRANA MALEVA-Σ (campo continuo discretizado)
+          │
+          ▼
+┌──────────────────────────────┐
+│ FRONT-END ANALÓGICO          │ ← 256 canales (IN_CH[n])
+│ (256 canales)                │
+└──────────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────┐
+│ PREAMPLIFICADOR DIFERENCIAL  │
+└──────────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────┐
+│ FILTRO PROGRAMABLE (1Hz–10kHz)│
+└──────────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────┐
+│ ADC 12-bit (time-mux 16:1)   │
+└──────────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────┐
+│ FIFO + TIMESTAMP ENGINE      │
+└──────────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────┐
+│ SPATIAL CORRELATION ENGINE   │ ← SCE CORE
+│ (SCE CORE)                   │
+└──────────────────────────────┘
+          │
+   ┌──────┴──────┐
+   ▼             ▼
+LVDS PACKET     TRIGGER UNIT
+OUTPUT BUS      (EVENT DET.)
+Floorplan Físico (Layout Conceptual)
+
+Organización: 4 bancos de 64 canales cada uno (total 256)
+Bloque central: Spatial Correlation Core (mesh processing + adjacency graph)
+Periferia: FIFO + Timestamp, LVDS Transmitter Array (16 streams), Clock & Synch Domain
+Pad Ring: IN_CH[0..255], VDD, GND, SPI
+
+Características clave
+
+Topología de entrada: 16 bancos × 16 canales
+Routing: Distancia máxima canal → preamp < 300 µm
+Cross-talk objetivo: < -60 dB
+Salida: 16 streams LVDS paralelos hacia avionica externa
+Función principal: Correlación espacial embebida para detección distribuida de daño y estados topológicos
